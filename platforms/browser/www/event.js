@@ -12,7 +12,29 @@ $(document).ready(function(){
     $('#inpGoods').focus();
     $('#btnFindSpinner').hide();
 
+    //alert($('#seDept').val())
+    $('#frm_Goods').hide();
 
+    $("select").change(function(){
+
+        var select = $('#seDept').val();
+        //alert(select);
+
+        if(select == "" || select == null || select == 0){
+
+            $('#frm_Goods').hide();
+
+
+        }else{
+
+            $('#frm_Goods').show();
+            $('#inpGoods').focus();
+
+        }
+        //select = null;
+        //alert(select);
+
+    });
 
     CheckBrch();
     function CheckBrch() {
@@ -95,12 +117,6 @@ $(document).ready(function(){
     }
 
 
-    $("select").change(function(){
-
-        //alert("select Working");
-        $('#inpGoods').focus();
-
-    });
 
 
     var touchtime = 0;
