@@ -277,7 +277,7 @@ function FindGood(inpGoodCode) {
                                 //$("#inpGoodCode").focus();
                                 //$("#inpGoodCode").select();
 
-                                /* ห้ามเปิดส่วนนี้ คำสั่งจะซื้อกัน กับ Complete Function*/
+                                /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
 
                             }
                         }
