@@ -60,18 +60,28 @@
 
           <div id="bodyPage">
 
-
+<!-- 
             <div class="container-fluid p-3 p-md-5">
               <span class="badge badge-info" id="BrchNameShow"></span>
-              <p id="BrchNameShow" style="font-size: 11px; margin-bottom: 0;"></p>
+            </div> -->
+
+            <div class="row">
+              <div class="col">
+                <span class="badge badge-info" id="BrchNameShow" style="padding: 9px;"></span>
+              </div>
+              <div class="col">
+                <span class="badge badge-info" id="DateNow"  style="padding: 9px;"></span>
+              </div>
             </div>
 
             <select class="custom-select custom-select-lg mb-3" id="seDept"></select>
+              
+
 
 
             <div id="frm_Goods">
 
-              <form class="form-inline" id="frm_SaveGoods" action="?#">
+              <form class="form-inline" id="frm_SaveGoods" action="#">
                 <div class="input-group">
                   <input type="text" class="form-control-lg form-control" id="inpGoods" placeholder="รหัสสินค้า" required >
                   <div class="input-group-append" >
@@ -79,14 +89,13 @@
                   </div>
                 </div>
               </form>
-
               <table id="tableBarCode" class="table table-hover" style="font-size: 60%; ">
                 <thead>
                   <tr>
                     <th style="padding: .40rem;" scope="col">รหัส</th>
                     <th style="padding: .40rem;" scope="col">ชื่อ</th>
                     <th style="padding: .40rem;" scope="col">หน่วย</th>
-                    <th style="padding: .40rem;" scope="col" align="right">จำนวน</th>
+                    <th style="padding: .40rem;" scope="col">ราคา</th>
                   </tr>
                 </thead>
                 <tbody id="table_data">
@@ -94,47 +103,53 @@
                 </tbody> 
               </table>        
               <!-- <button class="btn btn-primary btn-lg btn-block" type="submit" id="btnSave">บันทึกรายการ</button>  
-              <button class="btn btn-warning btn-sm btn-block" id="btnCancelBarCode">เริ่มใหม่</button> -->
+                <button class="btn btn-warning btn-sm btn-block" id="btnCancelBarCode">เริ่มใหม่</button> -->
 
-              
-            </div>
 
-            <div class="modal" tabindex="-1" role="dialog" id="md_Brch">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-body" id="md_body_brch">
+              </div>
 
-                    <h5 class="modal-title" style="padding-bottom: 10px;">เลือกสาขา <p style="font-size: 11px; ">(แตะ 2 ทีเลือกสาขา)</p></h5>
+              <div class="modal" tabindex="-1" role="dialog" id="md_Brch">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body" id="md_body_brch">
 
-                    <table class="table table-hover">
-                      <tbody id="tb_brch">
+                      <h5 class="modal-title" style="padding-bottom: 10px;">เลือกสาขา <p style="font-size: 11px; ">(แตะ 2 ทีเลือกสาขา)</p></h5>
 
-                      </tbody>
-                    </table>
+                      <table class="table table-hover">
+                        <tbody id="tb_brch">
 
-                  </div>
-                  <div class="modal-footer">
-                    <!-- <button type="button" id="CloseProgram" class="btn btn-secondary" data-dismiss="modal">ปิดโปรแกรม</button> -->
+                          <tr ID ="1"><td>สาขาทัพไทย</td></tr>
+                          <tr ID ="1001"><td>สาขาชยางกูร</td></tr>
+                          <tr ID ="1002"><td>สาขาวารินชำราบ</td></tr>
+                          <tr ID ="1000"><td>สาขาขอนแก่น</td></tr>
+                          <tr ID ="2000"><td>สาขาอุดรธานี</td></tr>
+
+                        </tbody>
+                      </table>
+
+                    </div>
+                    <div class="modal-footer">
+                      <!-- <button type="button" id="CloseProgram" class="btn btn-secondary" data-dismiss="modal">ปิดโปรแกรม</button> -->
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
 
-            <div class="modal fade" id="modalCheckGood">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-body" id="bodyCheckGood">
+              <div class="modal fade" id="modalCheckGood">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body" id="bodyCheckGood">
 
 
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" id="btnCancelGood" class="btn btn-secondary btn" data-dismiss="modal">ยกเลิก</button>
-                    <button type="button" id="btnConfirm" class="btn btn-warning btn"><span id="btnConfirmSpinner" class="spinner-border spinner-border"></span>ยืนยัน</button>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" id="btnCancelGood" class="btn btn-secondary btn" data-dismiss="modal">ยกเลิก</button>
+                      <button type="button" id="btnConfirm" class="btn btn-warning btn"><span id="btnConfirmSpinner" class="spinner-border spinner-border"></span>ยืนยัน</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div> 
+              </div> 
 
 
 
@@ -232,41 +247,41 @@
 
 
 
-          </div>
-
-
         </div>
 
 
       </div>
 
+
     </div>
-    <footer class="bd-footer text-muted">
-      <div class="container-fluid p-3 p-md-5">
-        <p id="LastUpdate" style="font-size: 11px; margin-bottom: 0;">Version 1.0.0</p>
-        <p id="CheckIP" style="font-size: 11px;"></p>
-      </div>
-    </footer>
-  </section>
+
+  </div>
+  <footer class="bd-footer text-muted">
+    <div class="container-fluid p-3 p-md-5">
+      <p id="LastUpdate" style="font-size: 11px; margin-bottom: 0;">Version 1.0.0</p>
+      <p id="CheckIP" style="font-size: 11px;"></p>
+    </div>
+  </footer>
+</section>
 
 
 
 
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Plugin JavaScript -->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Plugin JavaScript -->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  <!-- Custom JavaScript for this theme -->
-  <script src="js/scrolling-nav.js"></script>
+<!-- Custom JavaScript for this theme -->
+<script src="js/scrolling-nav.js"></script>
 
-  <script src="js/jquery-confirm.js"></script>
+<script src="js/jquery-confirm.js"></script>
 
-  <script src="event.js"></script>
+<script src="event.js"></script>
 
 
 

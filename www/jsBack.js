@@ -1,184 +1,184 @@
 
 
-    $("#btnFind").click(function(){
+$("#btnFind").click(function(){
 
-        PODocNo = $("#inpPO").val();
+    PODocNo = $("#inpPO").val();
 
-        if(PODocNo == ""){
+    if(PODocNo == ""){
 
-            $("#inpPO").focus()
+        $("#inpPO").focus()
 
-        }else{
+    }else{
 
-            FindPO();
+        FindPO();
+
+    }
+
+});
+
+
+
+CheckIP();
+function CheckIP() {
+
+    $.ajax({
+        type: 'POST',
+        url:"http://192.168.100.12/CheckPO/query_CheckIP.php",
+        success: function(data){
+            console.log(data);
+            $('#CheckIP').html(data);
+
+        },
+        error: function(e){
+            console.log(data);
+            $('#CheckIP').html(e.message);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+            console.log(XMLHttpRequest.responseText +" "+textStatus+" "+errorThrown);
+            $('#CheckIP').html(XMLHttpRequest.responseText +" "+textStatus+" "+errorThrown);
+        }
+    });
+}
+
+
+
+function FindPO() {
+
+    $('#btnFindSpinner').show();
+    $("#btnFind").prop('disabled', true);
+
+    $.ajax({
+        type: "post",
+        data: "PODocNo=" + PODocNo,
+        url: "http://192.168.100.12/CheckPO/query_checkPO.php",
+        success: function(msg) {
+
+            var data = msg.trim();
+            var arr = data.split('++--');
+
+
+            if (msg.trim() == "") {
+
+                $('#table_data').html("")
+                $.confirm({
+                    title: '<strong style="color: red;">แจ้งเตือน</strong>',
+                    content: 'ไม่พบเลขที่เอกสาร <strong style="color: red;">' + PODocNo + '</strong>',
+                    type: 'red',
+                    buttons: {
+                        ยืนยัน: function() {
+                            $("#inpPO").val("");
+                            $("#inpPO").focus();
+                        }
+                    }
+                });
+                $("#inpPO").select();
+                $('#btnCheck').hide();
+
+            } else if (msg.trim() == "NotCheck") {
+
+                $.confirm({
+                    title: '<strong style="color: #004085;">สถานะ</strong>',
+                    content: '<strong style="color: #004085;">' + PODocNo + '</strong> สถานะ <strong style="color: red;">FULL </strong> หรือ <strong style="color: red;">Cancel </strong> แล้ว ไม่สามารถตรวจสอบได้',
+                    type: 'blue',
+                    buttons: {
+                        ยืนยัน: function() {
+                            $("#inpPO").val("");
+                            $("#inpPO").focus();
+                        }
+                    }
+                });
+
+            } else if (msg.trim() == "NotAppv") {
+
+                $.confirm({
+                    title: '<strong style="color: #004085;">สถานะ</strong>',
+                    content: '<strong style="color: #004085;">' + PODocNo + '</strong> ยังไม่ได้อนุมัติ PO',
+                    type: 'blue',
+                    buttons: {
+                        ยืนยัน: function() {
+                            $("#inpPO").val("");
+                            $("#inpPO").focus();
+                        }
+                    }
+                });
+
+
+            } else if (arr[0] == "PODup") {
+
+                $.confirm({
+                    title: '<strong style="color: #004085;">สถานะ</strong>',
+                    content: '<strong style="color: #004085;">' + PODocNo + '</strong> ทำการบันทึกไปแล้ว ต้องการบันทึกซ้ำหรือไม่ ?',
+                    type: 'blue',
+                    buttons: {
+                        ยืนยัน: function() {
+
+                            $('#table_data').html(arr[1]);
+
+                            var row_tablePO = $('#table_data tr').length;
+                            $('#btnCheck').html("ดำเนินการ เช็คสินค้า (" + row_tablePO + ")");
+                            $('#btnCheck').show();
+                            $('#btnCancelPO').show();
+
+
+                        },
+                        ยกเลิก: function() {
+
+                            $("#inpPO").val("");
+                            $("#inpPO").focus();
+
+
+                        }
+
+                    }
+                });
+
+
+            } else {
+
+                var msg = msg.trim();
+                $('#table_data').html(msg);
+
+                var row_tablePO = $('#table_data tr').length;
+                $('#btnCheck').html("ดำเนินการ เช็คสินค้า (" + row_tablePO + ")");
+                $('#btnCheck').show();
+                $('#btnCancelPO').show();
+
+            }
+        },
+        complete: function() {
+
+            $('#btnFindSpinner').hide();
+            $("#btnFind").prop('disabled', false);
 
         }
-
     });
+}
 
 
 
-    CheckIP();
-    function CheckIP() {
+$("#btnCheck").click(function(){
 
-        $.ajax({
-            type: 'POST',
-            url:"http://192.168.100.12/CheckPO/query_CheckIP.php",
-            success: function(data){
-                console.log(data);
-                $('#CheckIP').html(data);
+    $('#header_frmgood').html(PODocNo);
+    $('#frm_PO').hide();
+    $('#tablePO').hide();
+    $('#btnCheck').hide();
+    $('#btnCancelPO').hide();
+    $('#inpPO').prop('disabled', true);
+    $('#btnFind').prop('disabled', true);
+    $('#frm_Good').show();
+    $('#inpStock').prop('disabled', true);
+    $('#btnSaveStock').prop('disabled', true);
+    $('#inpGoodCode').select();
 
-            },
-            error: function(e){
-                console.log(data);
-                $('#CheckIP').html(e.message);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-                console.log(XMLHttpRequest.responseText +" "+textStatus+" "+errorThrown);
-                $('#CheckIP').html(XMLHttpRequest.responseText +" "+textStatus+" "+errorThrown);
-            }
-        });
-    }
+});
 
 
 
-    function FindPO() {
+$("#btnFindGood").click(function(e) {
 
-        $('#btnFindSpinner').show();
-        $("#btnFind").prop('disabled', true);
-
-        $.ajax({
-            type: "post",
-            data: "PODocNo=" + PODocNo,
-            url: "http://192.168.100.12/CheckPO/query_checkPO.php",
-            success: function(msg) {
-
-                var data = msg.trim();
-                var arr = data.split('++--');
-
-
-                if (msg.trim() == "") {
-
-                    $('#table_data').html("")
-                    $.confirm({
-                        title: '<strong style="color: red;">แจ้งเตือน</strong>',
-                        content: 'ไม่พบเลขที่เอกสาร <strong style="color: red;">' + PODocNo + '</strong>',
-                        type: 'red',
-                        buttons: {
-                            ยืนยัน: function() {
-                                $("#inpPO").val("");
-                                $("#inpPO").focus();
-                            }
-                        }
-                    });
-                    $("#inpPO").select();
-                    $('#btnCheck').hide();
-
-                } else if (msg.trim() == "NotCheck") {
-
-                    $.confirm({
-                        title: '<strong style="color: #004085;">สถานะ</strong>',
-                        content: '<strong style="color: #004085;">' + PODocNo + '</strong> สถานะ <strong style="color: red;">FULL </strong> หรือ <strong style="color: red;">Cancel </strong> แล้ว ไม่สามารถตรวจสอบได้',
-                        type: 'blue',
-                        buttons: {
-                            ยืนยัน: function() {
-                                $("#inpPO").val("");
-                                $("#inpPO").focus();
-                            }
-                        }
-                    });
-
-                } else if (msg.trim() == "NotAppv") {
-
-                    $.confirm({
-                        title: '<strong style="color: #004085;">สถานะ</strong>',
-                        content: '<strong style="color: #004085;">' + PODocNo + '</strong> ยังไม่ได้อนุมัติ PO',
-                        type: 'blue',
-                        buttons: {
-                            ยืนยัน: function() {
-                                $("#inpPO").val("");
-                                $("#inpPO").focus();
-                            }
-                        }
-                    });
-
-
-                } else if (arr[0] == "PODup") {
-
-                    $.confirm({
-                        title: '<strong style="color: #004085;">สถานะ</strong>',
-                        content: '<strong style="color: #004085;">' + PODocNo + '</strong> ทำการบันทึกไปแล้ว ต้องการบันทึกซ้ำหรือไม่ ?',
-                        type: 'blue',
-                        buttons: {
-                            ยืนยัน: function() {
-
-                                $('#table_data').html(arr[1]);
-
-                                var row_tablePO = $('#table_data tr').length;
-                                $('#btnCheck').html("ดำเนินการ เช็คสินค้า (" + row_tablePO + ")");
-                                $('#btnCheck').show();
-                                $('#btnCancelPO').show();
-
-
-                            },
-                            ยกเลิก: function() {
-
-                                $("#inpPO").val("");
-                                $("#inpPO").focus();
-
-
-                            }
-
-                        }
-                    });
-
-
-                } else {
-
-                    var msg = msg.trim();
-                    $('#table_data').html(msg);
-
-                    var row_tablePO = $('#table_data tr').length;
-                    $('#btnCheck').html("ดำเนินการ เช็คสินค้า (" + row_tablePO + ")");
-                    $('#btnCheck').show();
-                    $('#btnCancelPO').show();
-
-                }
-            },
-            complete: function() {
-
-                $('#btnFindSpinner').hide();
-                $("#btnFind").prop('disabled', false);
-
-            }
-        });
-    }
-
-
-
-    $("#btnCheck").click(function(){
-
-        $('#header_frmgood').html(PODocNo);
-        $('#frm_PO').hide();
-        $('#tablePO').hide();
-        $('#btnCheck').hide();
-        $('#btnCancelPO').hide();
-        $('#inpPO').prop('disabled', true);
-        $('#btnFind').prop('disabled', true);
-        $('#frm_Good').show();
-        $('#inpStock').prop('disabled', true);
-        $('#btnSaveStock').prop('disabled', true);
-        $('#inpGoodCode').select();
-
-    });
-
-
-
-    $("#btnFindGood").click(function(e) {
-
-        e.preventDefault();
-        var inpGoodCode = $("#inpGoodCode").val();
+    e.preventDefault();
+    var inpGoodCode = $("#inpGoodCode").val();
         //FindGood(inpGoodCode);
 
 
@@ -323,7 +323,6 @@ $("#table_data_Good").on("click", "tr", function() {
             var getGood = $(this).find(".td_GoodCode").html();
             var rowDel = $(this).attr('id');
 
-
             $.confirm({
                 title: '<strong style="color: red;">ลบรายการ</strong>',
                 content: 'คุณต้องการลบ <code>'+getGood+'</code> ออกจากรายการหรือไม่ ?',
@@ -339,10 +338,7 @@ $("#table_data_Good").on("click", "tr", function() {
                     }
                 }
             });
-
             touchtime = 0;
-
-
         } else {
 
             touchtime = new Date().getTime();
@@ -357,28 +353,27 @@ $("#table_data_Good").on("click", "tr", function() {
 var Count = 0;
 $("#btnConfirm").click(function(){
 
-        //alert("Working")
-        $('#modalCheckGood').modal('hide');
-        $('#inpGoodCode').val("");
-        $('#inpGoodCode').select();
-        var NameCode = $('#modal_GoodName').html();
-        Count = Count + 1;
+    $('#modalCheckGood').modal('hide');
+    $('#inpGoodCode').val("");
+    $('#inpGoodCode').select();
+    var NameCode = $('#modal_GoodName').html();
+    Count = Count + 1;
 
-        Data_tableGood += "<tr id = 'row"+Count+"'>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_GoodCode'>" + $('#modal_GoodCode').html() + "</td>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_GoodName' Value = '"+NameCode+"'>" + NameCode.substring(0,4) + "</td>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_Inv'>" + $('#modal_Inv').html() + "</td>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_Loca'>" + $('#modal_Loca').html() + "</td>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_Unit'>" + $('#modal_Unit').html() + "</td>"
-        Data_tableGood += "<td style='padding: .40rem;' class = 'td_Count' align='right'>" + $('#modal_Count').val() + "</td>"
-        Data_tableGood += "</tr>"
+    Data_tableGood += "<tr id = 'row"+Count+"'>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_GoodCode'>" + $('#modal_GoodCode').html() + "</td>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_GoodName' Value = '"+NameCode+"'>" + NameCode.substring(0,4) + "</td>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_Inv'>" + $('#modal_Inv').html() + "</td>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_Loca'>" + $('#modal_Loca').html() + "</td>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_Unit'>" + $('#modal_Unit').html() + "</td>"
+    Data_tableGood += "<td style='padding: .40rem;' class = 'td_Count' align='right'>" + $('#modal_Count').val() + "</td>"
+    Data_tableGood += "</tr>"
 
-        $('#table_data_Good').append(Data_tableGood);
-        Data_tableGood = null;
-
+    $('#table_data_Good').append(Data_tableGood);
+    Data_tableGood = null;
 
 
-    });
+
+});
 
 function setData_Insert() {
 
