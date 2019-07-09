@@ -19,7 +19,12 @@ $(document).ready(function(){
     var d = new Date();
     var month = d.getMonth()+1;
     var day = d.getDate();
+    var year = d.getFullYear()+543;
     var DateNOW = d.getFullYear() + '-' + (month<10 ? '0' : '') + month + '-' + (day<10 ? '0' : '') + day;
+
+    var DateNOWShow = (day<10 ? '0' : '') + day + '-' + (month<10 ? '0' : '') + month + '-' + year;
+
+    //alert(DateNOWShow)
 
 
 
@@ -38,8 +43,9 @@ $(document).ready(function(){
 
         }else{
 
+            $('#inpGoods').val("");
             //alert(BrchID+" - "+select)
-            RefreshList(BrchID,select)
+            RefreshList(BrchID,select,DateNOW)
             $('#frm_Goods').show();
             $('#inpGoods').focus();
 
@@ -100,20 +106,20 @@ $(document).ready(function(){
 
 
 
-    function RefreshList(BrchID,inpDept) {
+    function RefreshList(BrchID,inpDept,DateNOW) {
 
         //alert(BrchID+" - "+inpDept);        
         $.ajax({
             type: "post",
-            data: "BrchID=" + BrchID + "&inpDept=" + inpDept,
+            data: "BrchID=" + BrchID + "&inpDept=" + inpDept+ "&DateNOW=" + DateNOW,
             url: "http://192.168.100.12/SaveBarCode/query_checkList.php",
             success: function(msg) {
                 if (msg.trim() == "") {
 
                     $.confirm({
-                        title: '<strong style="color: orange;">แจ้งเตือน</strong>',
-                        content: 'ไม่พบข้อมูลรหัสสินค้า <code>' + inpGoods + '</code>',
-                        type: 'orange',
+                        title: '<strong style="color: red;">แจ้งเตือน</strong>',
+                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: red;">' + inpGoods + '</strong>',
+                        type: 'red',
                         buttons: {
                             ยืนยัน: function () {
 
@@ -157,9 +163,9 @@ $(document).ready(function(){
                 if (msg.trim() == "") {
 
                     $.confirm({
-                        title: '<strong style="color: orange;">แจ้งเตือน</strong>',
-                        content: 'ไม่พบข้อมูลรหัสสินค้า <code>' + inpGoods + '</code>',
-                        type: 'orange',
+                        title: '<strong style="color: red;">แจ้งเตือน</strong>',
+                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: red;">' + inpGoods + '</strong>',
+                        type: 'red',
                         buttons: {
                             ยืนยัน: function () {
 
@@ -382,7 +388,7 @@ $(document).ready(function(){
 
                             $('#md_Brch').modal("hide");
                             $('#BrchNameShow').html(BrchName);
-                            $('#DateNow').html(DateNOW);
+                            $('#DateNow').html(DateNOWShow);
 
                             CheckDept(BrchID);
 
