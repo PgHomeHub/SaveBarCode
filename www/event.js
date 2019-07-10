@@ -9,6 +9,7 @@ $(document).ready(function(){
     var BrchID = "";
     var BrchName = "";
     var inpGoods = "";
+    var seDept = "";
 
     $('#inpGoods').focus();
     $('#btnFindSpinner').hide();
@@ -33,10 +34,10 @@ $(document).ready(function(){
 
     $("select").change(function(){
 
-        var select = $('#seDept').val();
-        //alert(select);
+        seDept = $('#seDept').val();
+        //alert(seDept);
 
-        if(select == "" || select == null || select == 0){
+        if(seDept == "" || seDept == null || seDept == 0){
 
             $('#frm_Goods').hide();
 
@@ -44,8 +45,8 @@ $(document).ready(function(){
         }else{
 
             $('#inpGoods').val("");
-            //alert(BrchID+" - "+select)
-            RefreshList(BrchID,select,DateNOW)
+            //alert(BrchID+" - "+seDept)
+            RefreshList(BrchID,seDept,DateNOW)
             $('#frm_Goods').show();
             $('#inpGoods').focus();
 
@@ -93,38 +94,144 @@ $(document).ready(function(){
 
     $("#btnConfirm").click(function() {
 
-        var modal_ID = $("#modal_GoodCode").attr("value").trim()
-        var modal_GoodCode = $("#modal_GoodCode").html();
-        var modal_Unit = $("#modal_Unit").html();
-        var modal_GoodName = $("#modal_GoodName").html();
-        var modal_Price = $("#modal_Price").html();
+        var GoodID = $("#modal_GoodCode").attr("value").trim()
+        var GoodCode = $("#modal_GoodCode").html();
+        var GoodUnit = $("#modal_Unit").html();
+        var GoodName = $("#modal_GoodName").text();
+        //var Price1 = $("#modal_Price").html();
+        var Price1 = $("#modal_Price").attr("value").trim()
+        var Count = $("#modal_Count").val();
 
-        //alert(modal_ID + "-" + modal_GoodCode + "-" + modal_Unit+ "-" + modal_GoodName);
+        //alert(GoodName);
 
+        //alert(GoodID + "-" + modal_GoodCode + "-" + modal_Unit+ "-" + modal_GoodName+ "-" + modal_Price);
+        InsertList(GoodID,GoodCode,GoodUnit,GoodName,Price1,Count);
 
     });
 
 
 
-    function RefreshList(BrchID,inpDept,DateNOW) {
 
-        //alert(BrchID+" - "+inpDept);        
+    /* ########################################### Start function ############################################ */
+    /* ####################################################################################################### */
+
+
+
+    function InsertList(GoodID,GoodCode,GoodUnit,GoodName,Price1,Count) {
+
+        //alert(BrchID + "-" + seDept+ "-" + DateNOW)
+
+        $.ajax({
+            type: 'POST',
+            data: "BrchID=" + BrchID + "&seDept=" + seDept + "&DateNOW=" + DateNOW 
+            + "&GoodID=" + GoodID + "&GoodCode=" + GoodCode + "&GoodUnit=" + GoodUnit 
+            + "&GoodName=" + GoodName + "&Price1=" + Price1 + "&Count=" + Count,
+            url:"http://192.168.100.12/SaveBarCode/query_insert.php",
+            success: function(msg){
+
+                if (msg.trim() == "") {
+
+                    $.confirm({
+                        title: '<strong style="color: orange;">แจ้งเตือน</strong>',
+                        content: 'ไม่พบข้อมูล สาขา',
+                        type: 'orange',
+                        buttons: {
+                            ยืนยัน: {
+                                btnClass: 'btn-orange',
+                                action: function(){
+
+                                }
+                            }
+                        }
+                    });
+
+                } else {
+
+                    var data = msg.trim();
+                    //$("#test").html(data)
+                    //alert(data)
+
+                    if(data == "Insert Successfully"){
+
+                        $.confirm({
+                            title: '<strong style="color: green;">สำเร็จ</strong>',
+                            content: 'บันทึกรายการ สำเร็จ',
+                            type: 'green',
+                            buttons: {
+                                ยืนยัน: {
+                                    btnClass: 'btn-green',
+                                    action: function(){
+
+                                        $("#inpGoods").val("");                                        
+                                        RefreshList(BrchID,seDept,DateNOW);
+                                        
+                                        $('#modalCheckGood').modal('hide');  
+
+                                    }
+                                }
+                            }
+                            
+                        });
+
+
+                    }else{
+
+                        $.confirm({
+                            title: '<strong style="color: #e74c3c;">Error </strong>',
+                            content: 'บันทึกรายการ ไม่สำเร็จ : '+data,
+                            type: 'red',
+                            buttons: {
+                                ยืนยัน: {
+                                    btnClass: 'btn-red',
+                                    action: function(){
+
+                                        //RefreshList(BrchID,seDept,DateNOW);
+
+                                    }
+                                }
+                            }
+                            
+                        });
+
+                    }
+
+
+                }
+
+            },
+            complete: function() {
+
+
+
+
+            }
+        });
+
+    }
+
+
+    function RefreshList(BrchID,seDept,DateNOW) {
+
+
+
         $.ajax({
             type: "post",
-            data: "BrchID=" + BrchID + "&inpDept=" + inpDept+ "&DateNOW=" + DateNOW,
+            data: "BrchID=" + BrchID + "&seDept=" + seDept+ "&DateNOW=" + DateNOW,
             url: "http://192.168.100.12/SaveBarCode/query_checkList.php",
             success: function(msg) {
                 if (msg.trim() == "") {
 
                     $.confirm({
-                        title: '<strong style="color: red;">แจ้งเตือน</strong>',
-                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: red;">' + inpGoods + '</strong>',
+                        title: '<strong style="color: #e74c3c;">แจ้งเตือน</strong>',
+                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: #e74c3c;">' + inpGoods + '</strong>',
                         type: 'red',
                         buttons: {
-                            ยืนยัน: function () {
+                            ยืนยัน: {
+                                btnClass: 'btn-red',
+                                action: function(){
+                                    /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
 
-                                /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
-
+                                }
                             }
                         }
                     });
@@ -134,6 +241,8 @@ $(document).ready(function(){
 
                     var msg = msg.trim();
                     $('#table_data').html(msg);
+
+                    $("#inpGoods").select();
                     //$('#modalCheckGood').modal('show');
 
 
@@ -141,7 +250,6 @@ $(document).ready(function(){
             },
             complete: function() {
 
-                //$('#btnFindSpinner').hide();
 
             }
         });
@@ -157,20 +265,22 @@ $(document).ready(function(){
 
         $.ajax({
             type: "post",
-            data: "inpGoods=" + inpGoods,
+            data: "inpGoods=" + inpGoods + "&BrchID=" + BrchID,
             url: "http://192.168.100.12/SaveBarCode/query_checkGood.php",
             success: function(msg) {
                 if (msg.trim() == "") {
 
                     $.confirm({
-                        title: '<strong style="color: red;">แจ้งเตือน</strong>',
-                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: red;">' + inpGoods + '</strong>',
+                        title: '<strong style="color: #e74c3c;">แจ้งเตือน</strong>',
+                        content: 'ไม่พบข้อมูลรหัสสินค้า <strong style="color: #e74c3c;">' + inpGoods + '</strong>',
                         type: 'red',
                         buttons: {
-                            ยืนยัน: function () {
+                            ยืนยัน: {
+                                btnClass: 'btn-red',
+                                action: function(){
+                                    /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
 
-                                /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
-
+                                }
                             }
                         }
                     });
@@ -196,7 +306,6 @@ $(document).ready(function(){
     }
 
 
-
     function CheckBrch() {
 
         $.ajax({
@@ -211,8 +320,11 @@ $(document).ready(function(){
                         content: 'ไม่พบข้อมูล สาขา',
                         type: 'orange',
                         buttons: {
-                            ยืนยัน: function () {
+                            ยืนยัน: {
+                                btnClass: 'btn-orange',
+                                action: function(){
 
+                                }
                             }
                         }
                     });
@@ -240,6 +352,8 @@ $(document).ready(function(){
     function CheckDept(BrchID) {
 
         //alert(BrchID)
+
+        $('#seDept').prop('disabled', true);
         $.ajax({
             type: 'POST',
             data: "BrchID=" + BrchID,
@@ -253,8 +367,11 @@ $(document).ready(function(){
                         content: 'ไม่พบข้อมูล สาขา',
                         type: 'orange',
                         buttons: {
-                            ยืนยัน: function () {
+                            ยืนยัน: {
+                                btnClass: 'btn-orange',
+                                action: function(){
 
+                                }
                             }
                         }
                     });
@@ -270,6 +387,7 @@ $(document).ready(function(){
 
             },
             complete: function() {
+                $('#seDept').prop('disabled', false);
 
 
             }
@@ -280,13 +398,13 @@ $(document).ready(function(){
 
 
 
-    function DeleteList(BrchID,inpDept,BarCode) {
+    function DeleteList(BrchID,seDept,BarCode,DateNOW) {
 
-        //alert(BrchID)
+        //alert(BrchID + "-" + seDept+ "-" + BarCode+ "-" + DateNOW)
         $.ajax({
             type: 'POST',
-            data: "BrchID=" + BrchID,
-            url:"http://192.168.100.12/SaveBarCode/query_checkDept.php",
+            data: "BrchID=" + BrchID + "&seDept=" + seDept + "&BarCode=" + BarCode + "&DateNOW=" + DateNOW,
+            url:"http://192.168.100.12/SaveBarCode/query_DeleteList.php",
             success: function(msg){
 
                 if (msg.trim() == "") {
@@ -296,8 +414,11 @@ $(document).ready(function(){
                         content: 'ไม่พบข้อมูล สาขา',
                         type: 'orange',
                         buttons: {
-                            ยืนยัน: function () {
+                            ยืนยัน: {
+                                btnClass: 'btn-orange',
+                                action: function(){
 
+                                }
                             }
                         }
                     });
@@ -306,7 +427,47 @@ $(document).ready(function(){
                 } else {
 
                     var data = msg.trim();
-                    $('#seDept').html(data);
+                    //$("#test").html(data)
+                    //alert(data)
+
+                    if(data == "Record delete successfully"){
+
+
+                        $.confirm({
+                            title: '<strong style="color: green;">ลบสำเร็จ</strong>',
+                            content: 'ลบรายการสินค้า สำเร็จ',
+                            type: 'green',
+                            buttons: {
+                                ยืนยัน: {
+                                    btnClass: 'btn-green',
+                                    action: function(){
+
+                                        RefreshList(BrchID,seDept,DateNOW);
+
+                                    }
+                                }
+                            }
+                        });
+
+
+                    }else{
+
+
+                        $.confirm({
+                            title: '<strong style="color: #e74c3c;">Error </strong>',
+                            content: 'ลบรายการสินค้า ไม่สำเร็จ : '+data,
+                            type: 'red',
+                            buttons: {
+                                ยืนยัน: {
+                                    btnClass: 'btn-red',
+                                    action: function(){
+
+                                    }
+                                }
+                            }
+                        });
+
+                    }
 
 
                 }
@@ -319,6 +480,14 @@ $(document).ready(function(){
         });
 
     }
+
+
+
+    /* ########################################### End function ############################################ */
+    /* ##################################################################################################### */
+
+
+
 
 
     var touchtimeDel = 0;
@@ -333,24 +502,30 @@ $(document).ready(function(){
 
                 //var getGood = $(this).find(".td_GoodCode").html();
                 //var rowDel = $(this).attr('id');
-                var getGood = $(this).find(".td_BarCode").html();
+                var BarCode = $(this).find(".td_BarCode").html();
 
                 $.confirm({
-                    title: '<strong style="color: red;">ลบรายการ</strong>',
+                    title: '<strong style="color: #e74c3c;">ลบรายการ</strong>',
                     //content: 'คุณต้องการลบ ออกจากรายการหรือไม่ ?',
-                    content: 'คุณต้องการลบ <code>'+getGood+'</code> ออกจากรายการหรือไม่ ?',
+                    content: 'คุณต้องการลบ <strong style="color: #e74c3c;">'+BarCode+'</strong> ออกจากรายการหรือไม่ ?',
                     type: 'red',
                     buttons: {
-                        ยืนยัน: function () {
-
-                            //$('#'+rowDel).remove();
-
-                        },
                         ยกเลิก: function () {
 
+                        },
+                        ยืนยัน: {
+                            btnClass: 'btn-red',
+                            action: function(){
+
+                            //alert("Working")
+                            DeleteList(BrchID,seDept,BarCode,DateNOW)
+                            //alert(+BrchID + "-" + seDept+ "-" + getGood+ "-" + DateNOW);
+                            //$('#'+rowDel).remove();
                         }
                     }
-                });
+
+                }
+            });
                 touchtimeDel = 0;
             } else {
 
@@ -360,8 +535,6 @@ $(document).ready(function(){
         }
 
     });
-
-
 
 
     var touchtime = 0;
@@ -384,18 +557,21 @@ $(document).ready(function(){
                     content: 'คุณเลือกสาขา <strong style="color: green;">'+BrchName+'</strong>',
                     type: 'green',
                     buttons: {
-                        ยืนยัน: function () {
-
-                            $('#md_Brch').modal("hide");
-                            $('#BrchNameShow').html(BrchName);
-                            $('#DateNow').html(DateNOWShow);
-
-                            CheckDept(BrchID);
+                        ยกเลิก:  function () {
 
                         },
-                        ยกเลิก: function () {
+                        ยืนยัน: {
+                            btnClass: 'btn-green',
+                            action: function(){
 
+                                $('#md_Brch').modal("hide");
+                                $('#BrchNameShow').html(BrchName);
+                                $('#DateNow').html(DateNOWShow);
+
+                                CheckDept(BrchID);
+                            }
                         }
+                        
                     }
                 });
 
