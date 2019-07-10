@@ -102,11 +102,36 @@ $(document).ready(function(){
         var Price1 = $("#modal_Price").attr("value").trim()
         var Count = $("#modal_Count").val();
 
+
+        if(Count > 10){
+
+            //alert("Max 10")
+
+            $.confirm({
+                title: '<strong style="color: orange;">แจ้งเตือน</strong>',
+                content: 'ใส่จำนวนพิมพ์ มากกว่า 10 รายการ กรุณาตรวจสอบอีกครั้ง',
+                type: 'orange',
+                buttons: {
+                    ยืนยัน: {
+                        btnClass: 'btn-orange',
+                        action: function(){
+                            
+                            $("#modal_Count").select();
+
+                        }
+                    }
+                }
+            });
+
+        }else{
+
+            InsertList(GoodID,GoodCode,GoodUnit,GoodName,Price1,Count);
+
+        }
+
         //alert(GoodName);
 
         //alert(GoodID + "-" + modal_GoodCode + "-" + modal_Unit+ "-" + modal_GoodName+ "-" + modal_Price);
-        InsertList(GoodID,GoodCode,GoodUnit,GoodName,Price1,Count);
-
     });
 
 
