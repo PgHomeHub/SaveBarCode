@@ -46,9 +46,10 @@ $(document).ready(function(){
 
             $('#inpGoods').val("");
             //alert(BrchID+" - "+seDept)
-            RefreshList(BrchID,seDept,DateNOW)
             $('#frm_Goods').show();
             $('#inpGoods').focus();
+            RefreshList(BrchID,seDept,DateNOW);
+
 
         }
 
@@ -65,8 +66,40 @@ $(document).ready(function(){
         CheckDept(BrchID);
 
 
+
     });
 
+    $("#btnClearAll").click(function(){
+
+        //alert(BrchID+"--"+seDept+"--"+DateNOW+"--"+"All")
+
+        $.confirm({
+            title: '<strong style="color: #e74c3c;">แจ้งเตือน</strong>',
+            content: 'คุณต้องการลบรายการทั้งหมด ของแผนก : <strong style="color: #e74c3c;">'+seDept+'</strong> ใช่หรือไม่',
+            type: 'red',
+            buttons: {
+                ยกเลิก: function () {
+
+
+                    $('#inpGoods').val("");
+                    $('#inpGoods').focus();
+
+
+
+                },
+                ยืนยัน: {
+                    btnClass: 'btn-red',
+                    action: function(){
+
+                        DeleteList(BrchID,seDept,"",DateNOW,"","All")
+
+                    }
+                }
+            }
+        });
+
+
+    });
 
 
 
@@ -90,6 +123,14 @@ $(document).ready(function(){
     });
 
 
+    $("#btnCancelGood").click(function() {
+
+
+        $("#inpGoods").val("");
+        $("#inpGoods").select();
+
+
+    });
 
 
     $("#btnConfirm").click(function() {
@@ -115,7 +156,7 @@ $(document).ready(function(){
                     ยืนยัน: {
                         btnClass: 'btn-orange',
                         action: function(){
-                            
+
                             $("#modal_Count").select();
 
                         }
@@ -132,6 +173,7 @@ $(document).ready(function(){
         //alert(GoodName);
 
         //alert(GoodID + "-" + modal_GoodCode + "-" + modal_Unit+ "-" + modal_GoodName+ "-" + modal_Price);
+
     });
 
 
@@ -178,7 +220,12 @@ $(document).ready(function(){
 
                     if(data == "Insert Successfully"){
 
-                        $.confirm({
+
+                        $("#inpGoods").val("");                                        
+                        RefreshList(BrchID,seDept,DateNOW);                                        
+                        $('#modalCheckGood').modal('hide');  
+
+                        /*$.confirm({
                             title: '<strong style="color: green;">สำเร็จ</strong>',
                             content: 'บันทึกรายการ สำเร็จ',
                             type: 'green',
@@ -188,15 +235,14 @@ $(document).ready(function(){
                                     action: function(){
 
                                         $("#inpGoods").val("");                                        
-                                        RefreshList(BrchID,seDept,DateNOW);
-                                        
+                                        RefreshList(BrchID,seDept,DateNOW);                                        
                                         $('#modalCheckGood').modal('hide');  
 
                                     }
                                 }
                             }
                             
-                        });
+                        });*/
 
 
                     }else{
@@ -235,8 +281,29 @@ $(document).ready(function(){
     }
 
 
-    function RefreshList(BrchID,seDept,DateNOW) {
+    function CheckbtnClearAll() {
 
+
+        var rowCount = $('#table_data tr').length;
+        //alert(rowCount);
+
+        if(rowCount > 0){
+
+            $("#btnClearAll").show();
+
+        }else{
+
+            $("#btnClearAll").hide();
+
+        }
+
+
+
+
+    }
+
+
+    function RefreshList(BrchID,seDept,DateNOW) {
 
 
         $.ajax({
@@ -254,6 +321,7 @@ $(document).ready(function(){
                             ยืนยัน: {
                                 btnClass: 'btn-red',
                                 action: function(){
+
                                     /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
 
                                 }
@@ -266,8 +334,9 @@ $(document).ready(function(){
 
                     var msg = msg.trim();
                     $('#table_data').html(msg);
-
                     $("#inpGoods").select();
+                    CheckbtnClearAll();
+
                     //$('#modalCheckGood').modal('show');
 
 
@@ -285,8 +354,10 @@ $(document).ready(function(){
 
     function FindGood(inpGoods) {
 
-        $('#btnFindSpinner').show();
         //$("#btnConfirm").prop('disabled', true);
+
+
+        $('#btnFindSpinner').show();
 
         $.ajax({
             type: "post",
@@ -303,6 +374,7 @@ $(document).ready(function(){
                             ยืนยัน: {
                                 btnClass: 'btn-red',
                                 action: function(){
+
                                     /* ห้ามเปิดส่วนนี้ คำสั่งจะซ้ำกับ Complete Function*/
 
                                 }
@@ -319,13 +391,21 @@ $(document).ready(function(){
 
 
                 }
+
+
             },
             complete: function() {
 
+
+                $('#inpGoods').select();
                 $('#btnFindSpinner').hide();
+                //alert("Working")
+                //$('#inpGoods').select();
+
 
             }
         });
+
 
 
     }
@@ -423,12 +503,12 @@ $(document).ready(function(){
 
 
 
-    function DeleteList(BrchID,seDept,BarCode,DateNOW) {
+    function DeleteList(BrchID,seDept,BarCode,DateNOW,IDList,TypeDelete) {
 
         //alert(BrchID + "-" + seDept+ "-" + BarCode+ "-" + DateNOW)
         $.ajax({
             type: 'POST',
-            data: "BrchID=" + BrchID + "&seDept=" + seDept + "&BarCode=" + BarCode + "&DateNOW=" + DateNOW,
+            data: "BrchID=" + BrchID + "&seDept=" + seDept + "&BarCode=" + BarCode + "&DateNOW=" + DateNOW + "&IDList=" + IDList + "&TypeDelete=" + TypeDelete,
             url:"http://192.168.100.12/SaveBarCode/query_DeleteList.php",
             success: function(msg){
 
@@ -457,8 +537,9 @@ $(document).ready(function(){
 
                     if(data == "Record delete successfully"){
 
+                        RefreshList(BrchID,seDept,DateNOW);
 
-                        $.confirm({
+                        /*$.confirm({
                             title: '<strong style="color: green;">ลบสำเร็จ</strong>',
                             content: 'ลบรายการสินค้า สำเร็จ',
                             type: 'green',
@@ -467,12 +548,11 @@ $(document).ready(function(){
                                     btnClass: 'btn-green',
                                     action: function(){
 
-                                        RefreshList(BrchID,seDept,DateNOW);
 
                                     }
                                 }
                             }
-                        });
+                        });*/
 
 
                     }else{
@@ -513,8 +593,6 @@ $(document).ready(function(){
 
 
 
-
-
     var touchtimeDel = 0;
     $("#table_data").on("click", "tr", function() {
 
@@ -528,7 +606,12 @@ $(document).ready(function(){
                 //var getGood = $(this).find(".td_GoodCode").html();
                 //var rowDel = $(this).attr('id');
                 var BarCode = $(this).find(".td_BarCode").html();
+                var IDList = $(this).attr('id');
 
+
+                //alert(BrchID + "-" + seDept+ "-" + BarCode+ "-" + DateNOW+ "-" + IDList);
+
+                
                 $.confirm({
                     title: '<strong style="color: #e74c3c;">ลบรายการ</strong>',
                     //content: 'คุณต้องการลบ ออกจากรายการหรือไม่ ?',
@@ -542,15 +625,14 @@ $(document).ready(function(){
                             btnClass: 'btn-red',
                             action: function(){
 
-                            //alert("Working")
-                            DeleteList(BrchID,seDept,BarCode,DateNOW)
-                            //alert(+BrchID + "-" + seDept+ "-" + getGood+ "-" + DateNOW);
-                            //$('#'+rowDel).remove();
-                        }
-                    }
+                                DeleteList(BrchID,seDept,BarCode,DateNOW,IDList,"item")
 
-                }
-            });
+                            }
+                        }
+
+                    }
+                });
+                
                 touchtimeDel = 0;
             } else {
 
