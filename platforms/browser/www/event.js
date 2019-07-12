@@ -647,6 +647,35 @@ $(document).ready(function(){
     var touchtime = 0;
     $("#tb_brch").on("click", "tr", function(){
 
+        BrchID = $(this).attr('ID');
+        //BrchName = $(this).attr('BrchName');
+        BrchName = $(this).html();
+
+
+        $.confirm({
+            title: '<strong style="color: green;">สาขา</strong>',
+            content: 'คุณเลือกสาขา <strong style="color: green;">'+BrchName+'</strong>',
+            type: 'green',
+            buttons: {
+                ยกเลิก:  function () {
+
+                },
+                ยืนยัน: {
+                    btnClass: 'btn-green',
+                    action: function(){
+
+                        $('#md_Brch').modal("hide");
+                        $('#BrchNameShow').html(BrchName);
+                        $('#DateNow').html(DateNOWShow);
+
+                        CheckDept(BrchID);
+                    }
+                }
+                
+            }
+        });
+
+                /*
         if (touchtime == 0) {
 
             touchtime = new Date().getTime();
@@ -690,7 +719,7 @@ $(document).ready(function(){
                 touchtime = new Date().getTime();
 
             }
-        }
+        }*/
 
     });
 
