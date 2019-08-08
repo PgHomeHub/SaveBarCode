@@ -193,7 +193,7 @@ $(document).ready(function(){
             data: "BrchID=" + BrchID + "&seDept=" + seDept + "&DateNOW=" + DateNOW 
             + "&GoodID=" + GoodID + "&GoodCode=" + GoodCode + "&GoodUnit=" + GoodUnit 
             + "&GoodName=" + GoodName + "&Price1=" + Price1 + "&Count=" + Count,
-            url:"http://192.168.100.12/SaveBarCode/query_insert.php",
+            url:"http://192.168.100.31:8080/SaveBarCode/query_insert.php",
             success: function(msg){
 
                 if (msg.trim() == "") {
@@ -309,7 +309,7 @@ $(document).ready(function(){
         $.ajax({
             type: "post",
             data: "BrchID=" + BrchID + "&seDept=" + seDept+ "&DateNOW=" + DateNOW,
-            url: "http://192.168.100.12/SaveBarCode/query_checkList.php",
+            url: "http://192.168.100.31:8080/SaveBarCode/query_checkList.php",
             success: function(msg) {
                 if (msg.trim() == "") {
 
@@ -362,7 +362,7 @@ $(document).ready(function(){
         $.ajax({
             type: "post",
             data: "inpGoods=" + inpGoods + "&BrchID=" + BrchID,
-            url: "http://192.168.100.12/SaveBarCode/query_checkGood.php",
+            url: "http://192.168.100.31:8080/SaveBarCode/query_checkGood.php",
             success: function(msg) {
                 if (msg.trim() == "") {
 
@@ -415,7 +415,7 @@ $(document).ready(function(){
 
         $.ajax({
             type: 'POST',
-            url:"http://192.168.100.12/SaveBarCode/query_checkBrch.php",
+            url:"http://192.168.100.31:8080/SaveBarCode/query_checkBrch.php",
             success: function(msg){
 
                 if (msg.trim() == "") {
@@ -462,7 +462,7 @@ $(document).ready(function(){
         $.ajax({
             type: 'POST',
             data: "BrchID=" + BrchID,
-            url:"http://192.168.100.12/SaveBarCode/query_checkDept.php",
+            url:"http://192.168.100.31:8080/SaveBarCode/query_checkDept.php",
             success: function(msg){
 
                 if (msg.trim() == "") {
@@ -509,7 +509,7 @@ $(document).ready(function(){
         $.ajax({
             type: 'POST',
             data: "BrchID=" + BrchID + "&seDept=" + seDept + "&BarCode=" + BarCode + "&DateNOW=" + DateNOW + "&IDList=" + IDList + "&TypeDelete=" + TypeDelete,
-            url:"http://192.168.100.12/SaveBarCode/query_DeleteList.php",
+            url:"http://192.168.100.31:8080/SaveBarCode/query_DeleteList.php",
             success: function(msg){
 
                 if (msg.trim() == "") {
